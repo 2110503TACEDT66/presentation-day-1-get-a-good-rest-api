@@ -1,7 +1,6 @@
-const Hospital  = require('../models/Hospital');
-const vacCenter = require('../models/VacCenter');
+const Massage  = require('../models/Massage');
 
-exports.getHospitals = async (req, res, next) => {
+exports.getMassages = async (req, res, next) => {
     let query;
 
     const reqQuery = {...req.query};
@@ -15,7 +14,7 @@ exports.getHospitals = async (req, res, next) => {
     let queryStr = JSON.stringify(req.query);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
         
-    query = Hospital.find(JSON.parse(queryStr)).populate('appointments')
+    query = Massage.find(JSON.parse(queryStr)).populate('reservations')
 
     if(req.query.select){
         const fields = req.query.select.split(',').join(' ');
@@ -33,12 +32,12 @@ exports.getHospitals = async (req, res, next) => {
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const total = await Hospital.countDocuments();
+    const total = await Massage.countDocuments();
 
     query = query.skip(startIndex).limit(limit);
 
     try {
-        const hospitals = await query;
+        const massages = await query;
         const pagination = {};
 
         if(endIndex < total){
@@ -54,65 +53,54 @@ exports.getHospitals = async (req, res, next) => {
                 limit
             }
         }
-        res.status(200).json({success: true, count: hospitals.length,pagination ,data: hospitals});
+        res.status(200).json({success: true, count: massages.length,pagination ,data: massages});
     } catch (err) {
         res.status(400).json({success: false});
     }
 };
 
-exports.getHospital = async (req, res, next) => {
+exports.getMassage = async (req, res, next) => {
     try{
-        const hospital = await Hospital.findById(req.params.id);
-        if(!hospital){
+        const massage = await Massage.findById(req.params.id);
+        if(!massage){
             return res.status(400).json({success: false});
         }
-        res.status(200).json({success: true, data: hospital});
+        res.status(200).json({success: true, data: massage});
     } catch (err) {
         res.status(400).json({success: false});
     }
 };
 
-exports.createHospital = async (req, res, next) => {
-    const hospital = await Hospital.create(req.body);
-    res.status(201).json({success: true, data: hospital});
+exports.createMassage = async (req, res, next) => {
+    const massage = await Massage.create(req.body);
+    res.status(201).json({success: true, data: massage});
 
 };
 
-exports.updateHospital = async (req, res, next) => {
+exports.updateMassage = async (req, res, next) => {
     try{
-        const hospital = await Hospital.findByIdAndUpdate(req.params.id, req.body, {
+        const massage = await Massage.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
-        if(!hospital){
+        if(!massage){
             return res.status(400).json({success: false});
         }
-        res.status(200).json({success: true, data: hospital});
+        res.status(200).json({success: true, data: massage});
     } catch (err) {
         res.status(400).json({success: false});
     }
 };
 
-exports.deleteHospital = async (req, res, next) => {
+exports.deleteMassage = async (req, res, next) => {
     try{
-        const hospital = await Hospital.findById(req.params.id);
-        if(!hospital){
+        const massage = await Massage.findById(req.params.id);
+        if(!massage){
             return res.status(400).json({success: false});
         }
-        await hospital.deleteOne();
+        await massage.deleteOne();
         res.status(200).json({success: true, data: {}});
     } catch (err) {
         res.status(400).json({success: false});
     }
 };
-
-exports.getVacCenters = (req,res,next)=>{
-    vacCenter.getAll((err, data) => {
-        if (err) {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Vaccine Centers"
-            });
-        } else res.send(data);
-    });
-}
