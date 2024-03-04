@@ -5,6 +5,8 @@ const connectDB = require('./config/db');
 const auth = require('./routes/auth');
 const massages = require('./routes/massages');
 const reservations = require('./routes/reservations');
+const slips = require('./routes/slips');
+
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const { xss } = require('express-xss-sanitizer');
@@ -53,9 +55,11 @@ app.use(mongoSanitize());
 app.use(cookieParser());
 app.use(hpp());
 app.use(cors());
+
 app.use('/api/v1/massages', massages);
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/reservations', reservations);
+app.use('/api/v1/slips', slips);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
