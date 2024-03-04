@@ -9,7 +9,7 @@ exports.getReservations = async (req, res, next) => {
             select: 'name province tel'
         })
     }else{
-        if(req.params.massageId){
+        if(req.params.massageId) {
             query = Reservation.find({massage: req.params.massageId}).populate({
                 path: 'massage',
                 select: 'name province tel'
