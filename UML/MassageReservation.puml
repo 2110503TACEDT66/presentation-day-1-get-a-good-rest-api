@@ -60,6 +60,27 @@ package "Massage Reservation"{
         -createdAt
     }
 
+    class "<<Resource>>\nSlip" as ResourceSlip {
+        <<GET>> +getSlip():Slip
+        <<POST>> +createSlip():Slip
+    }
+
+    class "<<Resource>>\nSlip" as ResourceSlips {
+        <<GET>> +getSlip(): Slip
+        <<PUT>> +updateSlip(): Slip
+        <<DELETE>> +deleteSlip(): void
+    }
+
+    class "<<Representation>>\nSlip" as RepresentationSlip {
+        -reservation
+        -slipPhoto
+        -date
+    }
+
+    class "<<Resource>>\nSlip" as ResourceSlipPhoto {
+        <<POST>> +uploadSlipPhoto():Slip
+    }
+
 }
 
 MassageReservation ..> ResourceAuths:"/me\n<<Path>>"
@@ -75,5 +96,10 @@ ResourceReservation ..> RepresentationReservation: "<<use>>"
 MassageReservation ..> ResourceMassages:"/massage\n<<Path>>"
 ResourceMassages ..> ResourceMassage: "/{massageId}\n<<Path>>"
 ResourceMassage ..> RepresentationMassage: "<<use>>"
+
+MassageReservation ..> ResourceSlip:"/slip\n<<Path>>"
+ResourceSlip ..> ResourceSlips: "/{slipId}\n<<Path>>"
+ResourceSlips ..> ResourceSlipPhoto: "/photo\n<<Path>>"
+ResourceSlipPhoto ..> RepresentationSlip: "<<use>>"
 
 @enduml
