@@ -27,6 +27,9 @@ const limiter = rateLimit({
     max: 5000
 });
 
+const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on ${process.env.HOST}:${PORT}`));
+
 const swaggerOptions = {
     swaggerDefinition: {
         openapi : '3.0.0',
@@ -61,8 +64,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/reservations', reservations);
 app.use('/api/v1/slips', slips);
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on ${process.env.HOST}:${PORT}`));
+
 
 process.on('unhandledRejection', (err, promise) => {
     console.log(`Error: ${err.message}`);
